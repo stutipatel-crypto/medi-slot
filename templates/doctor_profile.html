@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}{{ doctor.doctor_name }}{% endblock %}
+
+{% block content %}
+<!-- Profile hero -->
+<div class="profile-hero">
+  <div class="profile-header">
+    <img
+      src="{{ doctor.profile_image }}"
+      alt="Profile photo of {{ doctor.doctor_name }}"
+      class="profile-avatar"
+      onerror="this.src='/static/images/doctor-placeholder.svg'"
+    />
+    <div>
+      <div class="profile-name">{{ doctor.doctor_name }}</div>
+      <div class="profile-spec">{{ doctor.specialization }}</div>
+      <div style="opacity:0.85;font-size:0.9rem;margin-top:0.3rem;">
+        {{ doctor.clinic_name }} &bull; {{ doctor.city }}, {{ doctor.state }}
+      </div>
+      <div style="margin-top:0.6rem;">
+        <span class="badge badge-yellow">⚠️ {{ doctor.verification_status }}</span>
+        {% if doctor.clinic_booking_authorized %}
+          <span class="badge badge-green" style="margin-left:6px;">✅ Booking Authorized</span>
+        {% else %}
+          <span class="badge badge-red" style="margin-left:6px;">🔒 Live Booking Not Enabled</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container" style="max-width:900px;">
+
+    <!-- Verification banner -->
+    <div class="alert alert-warning" role="alert">
+      ⚠️ <strong>Important Notice:</strong> All information on this profile is user-supplied and has
+      <em>not</em> been independently verified. The consultation fee, visiting hours, address, and clinic
+      details require confirmation before being treated as accurate.
+    </div>
+
+    {% if not doctor.clinic_booking_authorized %}
+      <div class="alert alert-demo" role="alert">
+        🔒 <strong>Live clinic booking is not yet enabled</strong> for this doctor.
+        Appointments booked here are <strong>demo bookings only</strong> and are not sent to the clinic.
+        The clinic has not been contacted or authorized to receive bookings through Medi Slot.
+      </div>
+    {% endif %}
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;">
+
+      <!-- Contact & Clinic -->
+      <div class="card">
+        <div class="card-header">🏥 Clinic &amp; Location</div>
+        <div class="doctor-info-row"><strong>Clinic:</strong></div>
+        <p style="font-size:0.9rem;margin-bottom:0.75rem;">{{ doctor.clinic_name }}</p>
+
+        <div class="doctor-info-row"><strong>Area:</strong></div>
+        <p style="font-size:0.9rem;margin-bottom:0.75rem;">{{ doctor.area }}</p>
+
+        <div class="doctor-info-row"><strong>Full Address:</strong></div>
+        <p style="font-size:0.9rem;margin-bottom:0.75rem;">{{ doctor.address }}</p>
+        <p class="verification-notice">
+          ⚠️ Area is listed as "{{ doctor.area }}" but the address mentions
+          "Bakhtawar Ram Nagar". Both values are preserved as supplied.
+          Confirmation needed.
+        </p>
+
+        <div class="doctor-info-row"><strong>City / State / Country:</strong></div>
+        <p style="font-size:0.9rem;">{{ doctor.city }}, {{ doctor.state }}, {{ doctor.country }}</p>
+      </div>
+
+      <!-- Consultation details -->
+      <div class="card">
+        <div class="card-header">💰 Consultation Details</div>
+        <div class="doctor-info-row">
+          <strong>Fee:</strong>
+          <span style="font-size:1.1rem;font-weight:700;color:var(--blue);">₹{{ doctor.consultation_fee }}</span>
+        </div>
+        <p class="verification-notice">
+          ⚠️ This fee of ₹{{ doctor.consultation_fee }} must be reconfirmed before any live bookings.
+        </p>
+
+        <div class="doctor-info-row"><strong>Languages:</strong></div>
+        <p style="font-size:0.9rem;margin-bottom:0.75rem;">{{ doctor.languages | join(", ") }}</p>
+
+        <div class="doctor-info-row"><strong>Video Consultation:</strong></div>
+        {% if doctor.video_consultation_available == true %}
+          <p style="font-size:0.9rem;">✅ Available</p>
+        {% elif doctor.video_consultation_available == false %}
+          <p style="font-size:0.9rem;">❌ Not available</p>
+        {% else %}
+          <p style="font-size:0.9rem;color:var(--warning);">⚠️ Unknown — not confirmed</p>
+        {% endif %}
+      </div>
+
+      <!-- Qualifications -->
+      <div class="card">
+        <div class="card-header">🎓 Qualifications</div>
+        <ul style="padding-left:1.2rem;font-size:0.9rem;">
+          {% for q in doctor.qualifications %}
+            <li style="margin-bottom:0.4rem;">{{ q }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Professional memberships -->
+      <div class="card">
+        <div class="card-header">🏅 Professional Memberships</div>
+        <ul style="padding-left:1.2rem;font-size:0.9rem;">
+          {% for m in doctor.professional_memberships %}
+            <li style="margin-bottom:0.4rem;">{{ m }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <!-- Services -->
+      <div class="card">
+        <div class="card-header">🩺 Services Mentioned</div>
+        <ul style="padding-left:1.2rem;font-size:0.9rem;">
+          {% for s in doctor.services_mentioned %}
+            <li style="margin-bottom:0.4rem;">{{ s }}</li>
+          {% endfor %}
+        </ul>
+        <p class="verification-notice" style="margin-top:0.75rem;">
+          ⚠️ Services are self-reported and have not been independently verified.
+        </p>
+      </div>
+
+      <!-- Visiting hours -->
+      <div class="card">
+        <div class="card-header">🕐 Visiting Hours <span style="font-size:0.78rem;font-weight:400;color:var(--warning);">(needs confirmation)</span></div>
+        <table>
+          <tbody>
+            {% for day, hours in doctor.visiting_hours.items() %}
+              <tr>
+                <td style="font-weight:600;width:110px;">{{ day }}</td>
+                <td>{% if hours %}{{ hours }}{% else %}<em style="color:#9ca3af;">Closed</em>{% endif %}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Action buttons -->
+    <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap;">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('book_appointment', doctor_id=doctor.id) }}" class="btn btn-primary btn-lg">
+          📅 Book Demo Appointment
+        </a>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">
+          Login to Book
+        </a>
+      {% endif %}
+      <a href="{{ url_for('search_doctors') }}" class="btn btn-outline btn-lg">← Back to Search</a>
+    </div>
+
+    <!-- Data source notice -->
+    <div class="alert alert-info" style="margin-top:2rem;" role="note">
+      ℹ️ <strong>Data Source:</strong> {{ doctor.data_source }}.
+      This profile has not been officially verified or endorsed by Medi Slot.
+    </div>
+
+  </div>
+</div>
+{% endblock %}

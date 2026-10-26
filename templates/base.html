@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Medi Slot — Find the right doctor and book appointments with ease." />
+  <title>{% block title %}Medi Slot{% endblock %} — Medi Slot</title>
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}" type="image/svg+xml" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+  <div class="navbar-inner">
+    <a class="navbar-brand" href="{{ url_for('index') }}" aria-label="Medi Slot home">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" aria-hidden="true">
+        <rect width="40" height="40" rx="10" fill="#06b6d4" fill-opacity="0.15"/>
+        <rect width="40" height="40" rx="10" stroke="#06b6d4" stroke-width="1.5" fill="none"/>
+        <path d="M20 10 L20 30 M10 20 L30 20" stroke="#06b6d4" stroke-width="4.5" stroke-linecap="round"/>
+      </svg>
+      Medi<span class="brand-accent">Slot</span>
+    </a>
+
+    <button class="hamburger" aria-expanded="false" aria-controls="main-nav" aria-label="Open navigation">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+        <line x1="3" y1="6"  x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+
+    <ul class="navbar-nav" id="main-nav">
+      <li><a href="{{ url_for('index') }}"          {% if request.endpoint == 'index' %}class="active" aria-current="page"{% endif %}>Home</a></li>
+      <li><a href="{{ url_for('search_doctors') }}" {% if request.endpoint == 'search_doctors' %}class="active" aria-current="page"{% endif %}>Find Doctors</a></li>
+
+      {% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('dashboard') }}"      {% if request.endpoint == 'dashboard' %}class="active"{% endif %}>Dashboard</a></li>
+        <li><a href="{{ url_for('my_appointments') }}" {% if request.endpoint == 'my_appointments' %}class="active"{% endif %}>Appointments</a></li>
+        <li>
+          <a href="{{ url_for('notifications') }}" {% if request.endpoint == 'notifications' %}class="active"{% endif %}>
+            Notifications
+            {% if unread_notifications > 0 %}
+              <span class="notification-badge" aria-label="{{ unread_notifications }} unread">{{ unread_notifications }}</span>
+            {% endif %}
+          </a>
+        </li>
+        <li><a href="{{ url_for('logout') }}" style="color:var(--text-muted);">{{ current_user.name.split()[0] }} ↩</a></li>
+      {% else %}
+        <li><a href="{{ url_for('login') }}"  {% if request.endpoint == 'login'  %}class="active"{% endif %}>Login</a></li>
+        <li class="nav-signup"><a href="{{ url_for('signup') }}" {% if request.endpoint == 'signup' %}class="active"{% endif %}>Sign Up Free</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+<!-- ===================== END NAVBAR ===================== -->
+
+<!-- Flash messages -->
+<div style="max-width:1280px;margin:0 auto;padding:0 1.75rem;">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div style="padding-top:1.25rem;">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}" role="alert">
+            <span>{{ message }}</span>
+            <button class="alert-dismiss" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:1.2rem;line-height:1;color:inherit;opacity:0.6;padding:0;" aria-label="Dismiss">×</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+</div>
+
+<!-- Main content -->
+<main id="main-content">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer role="contentinfo">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <rect width="24" height="24" rx="6" fill="#06b6d4" fill-opacity="0.15"/>
+          <path d="M12 5 L12 19 M5 12 L19 12" stroke="#06b6d4" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        Medi<span class="brand-accent">Slot</span>
+      </div>
+      <p class="footer-desc">
+        A doctor search &amp; appointment booking platform.<br>
+        One verified doctor listed. All bookings are in <strong>demo mode</strong>.
+      </p>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('search_doctors') }}">Find Doctors</a></li>
+        {% if current_user.is_authenticated %}
+          <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+          <li><a href="{{ url_for('my_appointments') }}">My Appointments</a></li>
+        {% else %}
+          <li><a href="{{ url_for('login') }}">Login</a></li>
+          <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Notice</h4>
+      <ul>
+        <li><a href="#">Demo mode — no live bookings</a></li>
+        <li><a href="#">One doctor listed</a></li>
+        <li><a href="#">Data needs verification</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© {{ current_year }} MediSlot. All information requires independent verification.
+      This site is in <strong>demo / development mode</strong>.</p>
+  </div>
+</footer>
+<!-- ===================== END FOOTER ===================== -->
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

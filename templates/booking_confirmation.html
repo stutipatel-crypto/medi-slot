@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Booking Confirmed{% endblock %}
+
+{% block content %}
+<div class="section">
+  <div class="container" style="max-width:640px;">
+
+    <div style="text-align:center;margin-bottom:2rem;">
+      <div style="font-size:3.5rem;">✅</div>
+      <h1 style="color:var(--blue);font-size:1.8rem;font-weight:800;">Demo Booking Confirmed!</h1>
+      <p style="color:var(--text-muted);margin-top:0.4rem;">
+        Your demo appointment has been saved. This is <strong>not</strong> a real clinic booking.
+      </p>
+    </div>
+
+    <div class="alert alert-demo" role="alert">
+      🎭 <strong>DEMO BOOKING — NOT A REAL CLINIC APPOINTMENT</strong><br>
+      This booking is stored in the demo system only. The clinic has not been notified.
+      Do not visit the clinic based on this confirmation. The fee and availability
+      have not been confirmed.
+    </div>
+
+    <div class="card" style="margin-bottom:1.5rem;">
+      <div class="card-header">📋 Appointment Summary</div>
+      <table>
+        <tr><th>Appointment ID</th><td><code>{{ appt.appointment_id }}</code></td></tr>
+        <tr><th>Doctor</th><td>{{ appt.doctor_name }}</td></tr>
+        <tr><th>Clinic</th><td>{{ appt.clinic_name }}</td></tr>
+        <tr><th>Date</th><td>{{ appt.appointment_date }}</td></tr>
+        <tr><th>Time</th><td>{{ appt.appointment_time }}</td></tr>
+        <tr><th>Type</th><td>{{ appt.consultation_type }}</td></tr>
+        <tr>
+          <th>Status</th>
+          <td>
+            <span class="status-badge status-{{ appt.status }}">
+              {{ appt.status | replace('_', ' ') | title }}
+            </span>
+            <span class="badge badge-demo">DEMO</span>
+          </td>
+        </tr>
+        <tr>
+          <th>Fee</th>
+          <td>
+            ₹{{ appt._fee_note.split('Rs.')[1].split(' ')[0] if '_fee_note' in appt else '600' }}
+            <em style="font-size:0.78rem;color:var(--warning);"> (needs confirmation)</em>
+          </td>
+        </tr>
+        <tr><th>Booked At</th><td>{{ appt.created_at }}</td></tr>
+      </table>
+    </div>
+
+    <!-- Queue info (demo) -->
+    {% if queue_info and not queue_info.get('error') %}
+      <div class="queue-card" style="margin-bottom:1.5rem;">
+        <div style="font-size:0.78rem;font-weight:700;color:#c2410c;margin-bottom:0.5rem;">
+          ⚠️ DEMO QUEUE DATA — NOT REAL CLINIC QUEUE
+        </div>
+        <div class="queue-number">{{ queue_info.queue_number or '—' }}</div>
+        <div class="queue-label">Your demo queue number</div>
+        {% if queue_info.patients_ahead is not none %}
+          <div class="queue-wait">
+            {{ queue_info.patients_ahead }} patient{{ 's' if queue_info.patients_ahead != 1 else '' }} ahead
+          </div>
+          {% if queue_info.suggested_leave_time %}
+            <div style="margin-top:0.75rem;font-size:1rem;font-weight:700;color:var(--blue);">
+              🕐 Leave by {{ queue_info.suggested_leave_time }}
+            </div>
+            <div style="font-size:0.78rem;color:var(--text-muted);">Suggested time to leave for clinic</div>
+          {% endif %}
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+      <a href="{{ url_for('appointment_details', appointment_id=appt.appointment_id) }}"
+         class="btn btn-primary">View Appointment Details</a>
+      <a href="{{ url_for('my_appointments') }}" class="btn btn-outline">My Appointments</a>
+      <a href="{{ url_for('queue_status', appointment_id=appt.appointment_id) }}"
+         class="btn btn-outline">Queue Status</a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

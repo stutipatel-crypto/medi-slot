@@ -1,0 +1,36 @@
+{# _appt_card.html — Reusable appointment card partial #}
+<div class="appt-card">
+  <div style="flex:1;min-width:200px;">
+    <div style="font-weight:700;font-size:1rem;">{{ appt.doctor_name }}</div>
+    <div class="appt-meta">
+      {{ appt.clinic_name }} &bull; {{ appt.appointment_date }} at {{ appt.appointment_time }}
+      &bull; {{ appt.consultation_type }}
+    </div>
+    <div style="margin-top:0.4rem;display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center;">
+      <span class="status-badge status-{{ appt.status }}">
+        {{ appt.status | replace('_', ' ') | title }}
+      </span>
+      {% if appt.booking_mode == 'demo' %}
+        <span class="badge badge-demo">DEMO</span>
+      {% endif %}
+      <code style="font-size:0.75rem;color:var(--text-muted);">{{ appt.appointment_id }}</code>
+    </div>
+  </div>
+  <div class="appt-actions">
+    <a href="{{ url_for('appointment_details', appointment_id=appt.appointment_id) }}"
+       class="btn btn-outline btn-sm">Details</a>
+    {% if appt.status not in ('cancelled',) %}
+      <a href="{{ url_for('queue_status', appointment_id=appt.appointment_id) }}"
+         class="btn btn-outline btn-sm">Queue</a>
+      <a href="{{ url_for('reschedule_appointment', appointment_id=appt.appointment_id) }}"
+         class="btn btn-outline btn-sm">Reschedule</a>
+      <form method="post"
+            action="{{ url_for('cancel_appointment', appointment_id=appt.appointment_id) }}"
+            style="display:inline;"
+            onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+      </form>
+    {% endif %}
+  </div>
+</div>

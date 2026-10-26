@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <h2>Welcome Back</h2>
+    <p class="subtitle">Log in to your Medi Slot account to manage appointments.</p>
+
+    <form method="post" action="{{ url_for('login') }}" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          type="email" id="email" name="email"
+          value="{{ email | default('') }}"
+          required autocomplete="email"
+          placeholder="you@example.com"
+          aria-required="true"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-wrap">
+          <input
+            type="password" id="password" name="password"
+            required autocomplete="current-password"
+            placeholder="Your password"
+            aria-required="true"
+          />
+          <button type="button" class="toggle-pwd" aria-label="Show password">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:0.5rem;">
+        Login
+      </button>
+    </form>
+
+    <p style="text-align:center;margin-top:1.25rem;font-size:0.9rem;color:var(--text-muted);">
+      Don't have an account?
+      <a href="{{ url_for('signup') }}" style="font-weight:700;color:var(--primary);">Sign up free</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

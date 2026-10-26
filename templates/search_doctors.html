@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block title %}Find Doctors{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Find a Doctor</h1>
+  <p>Search by location and specialization. Medi Slot currently lists one specialist in Indore.</p>
+</div>
+
+<div class="section">
+  <div class="container">
+
+    <!-- Search form -->
+    <div class="card" style="margin-bottom:2rem;">
+      <div class="card-header">🔍 Search Filters</div>
+      <form action="{{ url_for('search_doctors') }}" method="get" aria-label="Doctor search filters">
+        <div class="search-grid">
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="s-country">Country</label>
+            <select name="country" id="s-country">
+              <option value="">Any</option>
+              <option value="India" {% if country == 'India' %}selected{% endif %}>India</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="s-state">State</label>
+            <select name="state" id="s-state">
+              <option value="">Any</option>
+              <option value="Madhya Pradesh" {% if state == 'Madhya Pradesh' %}selected{% endif %}>Madhya Pradesh</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="s-city">City</label>
+            <select name="city" id="s-city">
+              <option value="">Any</option>
+              <option value="Indore" {% if city == 'Indore' %}selected{% endif %}>Indore</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="s-area">Area / Locality</label>
+            <input type="text" name="area" id="s-area" value="{{ area }}"
+                   placeholder="e.g. Tilak Nagar" />
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="s-spec">Specialization</label>
+            <select name="specialization" id="s-spec">
+              <option value="">Any</option>
+              <option value="Pediatrician" {% if specialization in ('Pediatrician','Pediatrics') %}selected{% endif %}>Pediatrician / Pediatrics</option>
+              <option value="General Physician" {% if specialization == 'General Physician' %}selected{% endif %}>General Physician</option>
+              <option value="Cardiologist"      {% if specialization == 'Cardiologist' %}selected{% endif %}>Cardiologist</option>
+              <option value="Dermatologist"     {% if specialization == 'Dermatologist' %}selected{% endif %}>Dermatologist</option>
+              <option value="Orthopedic"        {% if specialization == 'Orthopedic' %}selected{% endif %}>Orthopedic</option>
+              <option value="Gynecologist"      {% if specialization == 'Gynecologist' %}selected{% endif %}>Gynecologist</option>
+              <option value="ENT Specialist"    {% if specialization == 'ENT Specialist' %}selected{% endif %}>ENT Specialist</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="s-sys">Medical System</label>
+            <select name="medical_system" id="s-sys">
+              <option value="">Any / Not filtered</option>
+              <option value="Modern Medicine" {% if medical_system == 'Modern Medicine' %}selected{% endif %}>Modern Medicine (Allopathy)</option>
+              <option value="Ayurveda"     {% if medical_system == 'Ayurveda' %}selected{% endif %}>Ayurveda</option>
+              <option value="Homeopathy"   {% if medical_system == 'Homeopathy' %}selected{% endif %}>Homeopathy</option>
+              <option value="Unani"        {% if medical_system == 'Unani' %}selected{% endif %}>Unani</option>
+              <option value="Siddha"       {% if medical_system == 'Siddha' %}selected{% endif %}>Siddha</option>
+              <option value="Yoga"         {% if medical_system == 'Yoga' %}selected{% endif %}>Yoga &amp; Naturopathy</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:0.75rem;margin-top:1rem;flex-wrap:wrap;">
+          <button type="submit" class="btn btn-primary">🔍 Search</button>
+          <a href="{{ url_for('search_doctors') }}" class="btn btn-outline">Clear</a>
+        </div>
+      </form>
+
+      {% if medical_system and medical_system not in ('', 'any', 'all') %}
+        <div class="alert alert-warning" style="margin-top:1rem;" role="alert">
+          ⚠️ The medical system classification for the listed doctor has not been confirmed.
+          Medical system filtering will show no results until confirmed.
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Results -->
+    {% if not searched %}
+      <div class="empty-state">
+        <div class="empty-state-icon">🔍</div>
+        <h3>Use the form above to search</h3>
+        <p>Try: City = Indore, Specialization = Pediatrician</p>
+      </div>
+
+    {% elif results %}
+      <p style="margin-bottom:1rem;color:var(--text-muted);font-size:0.92rem;">
+        {{ results | length }} doctor{{ 's' if results|length != 1 else '' }} found.
+      </p>
+      {% for doc in results %}
+        <div class="doctor-card" style="margin-bottom:1.5rem;">
+          <div class="doctor-card-header">
+            <img
+              src="{{ doc.profile_image }}"
+              alt="Profile photo of {{ doc.doctor_name }}"
+              class="doctor-avatar"
+              onerror="this.src='/static/images/doctor-placeholder.svg'"
+            />
+            <div>
+              <div class="doctor-name">{{ doc.doctor_name }}</div>
+              <div class="doctor-spec">{{ doc.specialization }}</div>
+              <div class="doctor-qual">
+                {% for q in doc.qualifications %}{{ q }}{% if not loop.last %} · {% endif %}{% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <div class="doctor-card-body">
+            <div class="verification-notice">
+              ⚠️ <strong>{{ doc.verification_status }}</strong> — Profile details, fee, and visiting hours
+              are user-supplied and require independent confirmation.
+            </div>
+
+            <div class="doctor-info-row">
+              🏥 <span><strong>{{ doc.clinic_name }}</strong></span>
+            </div>
+            <div class="doctor-info-row">
+              📍 <span>{{ doc.area }}, {{ doc.city }}, {{ doc.state }}, {{ doc.country }}</span>
+            </div>
+            <div class="doctor-info-row">
+              🏠 <span>{{ doc.address }}
+                <em style="font-size:0.78rem;color:var(--warning);">
+                  (Note: area listed as "{{ doc.area }}" but address says "Bakhtawar Ram Nagar" — pending confirmation)
+                </em>
+              </span>
+            </div>
+            <div class="doctor-info-row">
+              💰 <span>Consultation Fee: <strong>₹{{ doc.consultation_fee }}</strong>
+                <em style="font-size:0.78rem;color:var(--warning);"> (needs confirmation)</em>
+              </span>
+            </div>
+            <div class="doctor-info-row">
+              🌐 <span>{{ doc.languages | join(", ") }}</span>
+            </div>
+
+            <!-- Visiting hours summary -->
+            <div class="doctor-info-row" style="flex-direction:column;align-items:flex-start;">
+              <strong style="margin-bottom:0.3rem;">🕐 Visiting Hours <em style="font-weight:400;color:var(--warning);font-size:0.78rem;">(needs confirmation)</em></strong>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0.2rem;width:100%;">
+                {% for day, hours in doc.visiting_hours.items() %}
+                  <span style="font-size:0.82rem;color:var(--text-muted);">
+                    <strong style="color:#1e293b;">{{ day }}:</strong>
+                    {{ hours if hours else 'Closed' }}
+                  </span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <div class="doctor-card-footer">
+            <a href="{{ url_for('doctor_profile', doctor_id=doc.id) }}" class="btn btn-outline btn-sm">View Full Profile</a>
+            {% if current_user.is_authenticated %}
+              {% if doc.clinic_booking_authorized %}
+                <a href="{{ url_for('book_appointment', doctor_id=doc.id) }}" class="btn btn-primary btn-sm">Book Appointment</a>
+              {% else %}
+                <a href="{{ url_for('book_appointment', doctor_id=doc.id) }}" class="btn btn-primary btn-sm">Book Demo Appointment</a>
+              {% endif %}
+            {% else %}
+              <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">Login to Book</a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-state-icon">🔍</div>
+        <h3>No doctor found for your selected filters</h3>
+        <p>
+          Medi Slot currently lists one doctor: <strong>Dr. Sanjiv Singh Rawat</strong>,
+          a Pediatrician in Indore, Madhya Pradesh, India.<br>
+          Try searching with those filters.
+        </p>
+        <a href="{{ url_for('search_doctors') }}?city=Indore&specialization=Pediatrician"
+           class="btn btn-primary" style="margin-top:1rem;">
+          Search for Dr. Rawat
+        </a>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Welcome, {{ current_user.name }} 👋</h1>
+  <p>Here is your appointment dashboard.</p>
+</div>
+
+<div class="section">
+  <div class="container">
+
+    <!-- Stats row -->
+    <div class="dashboard-grid" style="margin-bottom:2rem;">
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div>
+          <div class="stat-number">{{ upcoming | length }}</div>
+          <div class="stat-label">Upcoming Appointments</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔔</div>
+        <div>
+          <div class="stat-number">{{ unread_notifications }}</div>
+          <div class="stat-label">Unread Notifications</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div>
+          <div class="stat-number">{{ recent_appointments | length }}</div>
+          <div class="stat-label">Total Recent</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem;">
+      <a href="{{ url_for('search_doctors') }}" class="btn btn-primary">🔍 Search Doctors</a>
+      <a href="{{ url_for('book_appointment', doctor_id=1) }}" class="btn btn-outline">📅 Book an Appointment</a>
+      <a href="{{ url_for('my_appointments') }}" class="btn btn-outline">📋 My Appointments</a>
+      <a href="{{ url_for('notifications') }}" class="btn btn-outline">
+        🔔 Notifications
+        {% if unread_notifications > 0 %}<span class="notification-badge">{{ unread_notifications }}</span>{% endif %}
+      </a>
+    </div>
+
+    <div class="dashboard-grid">
+
+      <!-- Upcoming appointments -->
+      <div class="card" style="grid-column: span 2;">
+        <div class="card-header">📅 Upcoming Appointments</div>
+        {% if upcoming %}
+          {% for appt in upcoming %}
+            <div class="appt-card">
+              <div>
+                <strong>{{ appt.doctor_name }}</strong>
+                <div class="appt-meta">
+                  {{ appt.clinic_name }} &bull;
+                  {{ appt.appointment_date }} at {{ appt.appointment_time }}
+                </div>
+                <span class="status-badge status-{{ appt.status }}">{{ appt.status | replace('_', ' ') | title }}</span>
+                {% if appt.booking_mode == 'demo' %}
+                  <span class="badge badge-demo" style="margin-left:4px;">DEMO</span>
+                {% endif %}
+              </div>
+              <div class="appt-actions">
+                <a href="{{ url_for('appointment_details', appointment_id=appt.appointment_id) }}" class="btn btn-outline btn-sm">Details</a>
+                <a href="{{ url_for('queue_status', appointment_id=appt.appointment_id) }}" class="btn btn-outline btn-sm">Queue</a>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state">
+            <div class="empty-state-icon">📅</div>
+            <h3>No upcoming appointments</h3>
+            <p><a href="{{ url_for('book_appointment', doctor_id=1) }}">Book a demo appointment</a> with Dr. Sanjiv Singh Rawat.</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Recent notifications -->
+      <div class="card">
+        <div class="card-header">🔔 Recent Notifications</div>
+        {% if notifications %}
+          {% for n in notifications %}
+            <div class="notif-item {% if not n.is_read %}notif-unread{% endif %}">
+              <span class="notif-icon">
+                {% if n.type == 'booking_confirmed' %}✅
+                {% elif n.type == 'booking_cancelled' %}❌
+                {% elif n.type == 'booking_rescheduled' %}🔄
+                {% elif n.type == 'queue_threshold' %}⏱️
+                {% else %}🔔{% endif %}
+              </span>
+              <div>
+                <div class="notif-msg">{{ n.message }}</div>
+                <div class="notif-time">{{ n.created_at }}</div>
+              </div>
+            </div>
+          {% endfor %}
+          <div style="padding:0.75rem;text-align:center;">
+            <a href="{{ url_for('notifications') }}" class="btn btn-outline btn-sm">View All</a>
+          </div>
+        {% else %}
+          <div class="empty-state" style="padding:1.5rem;">
+            <div class="empty-state-icon">🔔</div>
+            <h3>No notifications yet</h3>
+            <p>You'll see booking updates here.</p>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<style>
+  @media (max-width:768px) {
+    .dashboard-grid > .card:first-child { grid-column: span 1; }
+  }
+</style>
+{% endblock %}

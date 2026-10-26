@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 40">
+  <rect width="160" height="40" rx="8" fill="#1a6fc4"/>
+  <text x="12" y="27" font-family="'Segoe UI',sans-serif" font-weight="800" font-size="20" fill="#fff">Medi</text>
+  <text x="58" y="27" font-family="'Segoe UI',sans-serif" font-weight="400" font-size="20" fill="#93c5fd">Slot</text>
+  <rect x="50" y="8" width="3" height="24" rx="1.5" fill="#93c5fd"/>
+</svg>

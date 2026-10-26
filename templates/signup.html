@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <h2>Create Account</h2>
+    <p class="subtitle">Join Medi Slot to search doctors and book appointments.</p>
+
+    <form method="post" action="{{ url_for('signup') }}" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input
+          type="text" id="name" name="name"
+          value="{{ name | default('') }}"
+          required autocomplete="name"
+          placeholder="Your full name"
+          minlength="2"
+          aria-required="true"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          type="email" id="email" name="email"
+          value="{{ email | default('') }}"
+          required autocomplete="email"
+          placeholder="you@example.com"
+          aria-required="true"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password <span style="font-weight:400;color:var(--text-dim);">(min. 6 characters)</span></label>
+        <div class="password-wrap">
+          <input
+            type="password" id="password" name="password"
+            required autocomplete="new-password"
+            placeholder="Create a password"
+            minlength="6"
+            aria-required="true"
+          />
+          <button type="button" class="toggle-pwd" aria-label="Show password">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm_password">Confirm Password</label>
+        <div class="password-wrap">
+          <input
+            type="password" id="confirm_password" name="confirm_password"
+            required autocomplete="new-password"
+            placeholder="Repeat your password"
+            aria-required="true"
+          />
+          <button type="button" class="toggle-pwd" aria-label="Show confirm password">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:0.5rem;">
+        Create Account
+      </button>
+    </form>
+
+    <p style="text-align:center;margin-top:1.25rem;font-size:0.9rem;color:var(--text-muted);">
+      Already have an account?
+      <a href="{{ url_for('login') }}" style="font-weight:700;color:var(--primary);">Log in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

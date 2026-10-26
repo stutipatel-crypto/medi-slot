@@ -1,0 +1,50 @@
+
+[
+  {
+    "id": 1,
+    "doctor_name": "Dr. Sanjiv Singh Rawat",
+    "specialization": "Pediatrician",
+    "qualifications": [
+      "MBBS, Mahatma Gandhi Memorial Medical College, Indore, 1985",
+      "MD - Pediatrics, Mahatma Gandhi Memorial Medical College, Indore, 1989"
+    ],
+    "clinic_name": "Child Care Hospital",
+    "area": "Tilak Nagar",
+    "city": "Indore",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "address": "E-103, 104 Bakhtawar Ram Nagar, Indore, Indore",
+    "consultation_fee": 600,
+    "visiting_hours": {
+      "Monday": "09:00 AM - 05:00 PM",
+      "Tuesday": "09:00 AM - 05:00 PM",
+      "Wednesday": "09:00 AM - 05:00 PM",
+      "Thursday": "09:00 AM - 05:00 PM",
+      "Friday": "09:00 AM - 05:00 PM",
+      "Saturday": "09:00 AM - 03:00 PM",
+      "Sunday": null
+      
+    },
+    "languages": [
+      "English",
+      "Hindi"
+    ],
+    "professional_memberships": [
+      "Indian Academy of Paediatrics (IAP)",
+      "National Neonatology Forum (NNF)",
+      "IAP Respiratory Chapter"
+    ],
+    "services_mentioned": [
+      "Pediatric Vaccinations",
+      "Pediatric Asthma Management",
+      "Pediatric Consultation"
+    ],
+    "profile_image": "https://imagesx.practo.com/providers/dr-sanjiv-singh-rawat-pediatrician-ffc86b4e-40dc-4e75-ba0c-f711abf2471d.jpg?i_type=t_70x70",
+    "data_source": "Information supplied by the project owner",
+    "verification_status": "Verified",
+    "clinic_booking_authorized": true,
+    "video_consultation_available": false
+  }
+]
+
+

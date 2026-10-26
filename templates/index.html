@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero" aria-labelledby="hero-heading">
+  <h1 id="hero-heading">Find the Right Doctor,<br><span style="color:var(--primary);">Book with Confidence.</span></h1>
+  <p>Search verified doctors, view clinic details, and book appointments — all from one place.</p>
+
+  <div class="search-box">
+    <p style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1rem;">Search Doctors</p>
+    <form action="{{ url_for('search_doctors') }}" method="get" aria-label="Doctor search form">
+      <div class="search-grid">
+        <div class="form-group" style="margin-bottom:0">
+          <label for="h-country">Country</label>
+          <select name="country" id="h-country">
+            <option value="">Any</option>
+            <option value="India">India</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label for="h-state">State</label>
+          <select name="state" id="h-state">
+            <option value="">Any</option>
+            <option value="Madhya Pradesh">Madhya Pradesh</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label for="h-city">City</label>
+          <select name="city" id="h-city">
+            <option value="">Any</option>
+            <option value="Indore">Indore</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label for="h-spec">Specialization</label>
+          <select name="specialization" id="h-spec">
+            <option value="">Any</option>
+            <option value="Pediatrician">Pediatrician</option>
+            <option value="General Physician">General Physician</option>
+            <option value="Cardiologist">Cardiologist</option>
+            <option value="Dermatologist">Dermatologist</option>
+            <option value="Orthopedic">Orthopedic</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg" style="margin-top:1.25rem;width:100%;">
+        Search Doctors
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" aria-labelledby="how-heading">
+  <div class="container">
+    <h2 class="section-title" id="how-heading">How It <span>Works</span></h2>
+    <p class="section-subtitle">Three simple steps to your appointment</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">1</div>
+        <div class="step-title">Search</div>
+        <p class="step-desc">Use the search form to find doctors by location and specialization.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">2</div>
+        <div class="step-title">View Profile</div>
+        <p class="step-desc">Review qualifications, clinic details, visiting hours, and services.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">3</div>
+        <div class="step-title">Book</div>
+        <p class="step-desc">Select an available slot and confirm your appointment in seconds.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section class="section section-alt" aria-labelledby="benefits-heading">
+  <div class="container">
+    <h2 class="section-title" id="benefits-heading">Why <span>Medi Slot?</span></h2>
+    <p class="section-subtitle">Everything you need for a smooth appointment experience</p>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">📋</div>
+        <div class="benefit-title">Verified Profiles</div>
+        <p class="benefit-desc">Doctor information with clear verification status.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">📅</div>
+        <div class="benefit-title">Easy Booking</div>
+        <p class="benefit-desc">Pick your date and time slot in a few clicks.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🔔</div>
+        <div class="benefit-title">Notifications</div>
+        <p class="benefit-desc">In-app alerts keep you updated on appointments.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🔒</div>
+        <div class="benefit-title">Secure & Private</div>
+        <p class="benefit-desc">Your account and appointment data are protected.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED DOCTOR -->
+<section class="section" aria-labelledby="featured-heading">
+  <div class="container">
+    <h2 class="section-title" id="featured-heading">Our Listed <span>Doctor</span></h2>
+    <p class="section-subtitle">Medi Slot currently lists one specialist. All details require independent verification.</p>
+
+    {% if featured_doctor %}
+      <div style="max-width:600px;margin:0 auto;">
+        <div class="doctor-card">
+          <div class="doctor-card-header">
+            <img
+              src="{{ featured_doctor.profile_image }}"
+              alt="Profile photo of {{ featured_doctor.doctor_name }}"
+              class="doctor-avatar"
+              onerror="this.src='/static/images/doctor-placeholder.svg'"
+            />
+            <div>
+              <div class="doctor-name">{{ featured_doctor.doctor_name }}</div>
+              <div class="doctor-spec">{{ featured_doctor.specialization }}</div>
+              <div class="doctor-qual">
+                {% for q in featured_doctor.qualifications %}{{ q }}{% if not loop.last %} · {% endif %}{% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <div class="doctor-card-body">
+            <div class="verification-notice">
+              Profile information is user-supplied and marked "{{ featured_doctor.verification_status }}".
+              Fee, availability, and address require confirmation.
+            </div>
+            <div class="doctor-info-row">
+              🏥 <span><strong>{{ featured_doctor.clinic_name }}</strong></span>
+            </div>
+            <div class="doctor-info-row">
+              📍 <span>{{ featured_doctor.area }}, {{ featured_doctor.city }}, {{ featured_doctor.state }}</span>
+            </div>
+            <div class="doctor-info-row">
+              💰 <span>Consultation Fee: <strong>₹{{ featured_doctor.consultation_fee }}</strong>
+                <em style="font-size:0.78rem;color:var(--warning);"> (needs confirmation)</em></span>
+            </div>
+            <div class="doctor-info-row">
+              🌐 <span>{{ featured_doctor.languages | join(", ") }}</span>
+            </div>
+          </div>
+
+          <div class="doctor-card-footer">
+            <a href="{{ url_for('doctor_profile', doctor_id=featured_doctor.id) }}" class="btn btn-outline btn-sm">View Profile</a>
+            {% if current_user.is_authenticated %}
+              <a href="{{ url_for('book_appointment', doctor_id=featured_doctor.id) }}" class="btn btn-primary btn-sm">Book Appointment</a>
+            {% else %}
+              <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">Login to Book</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-state-icon">🏥</div>
+        <h3>Doctor profile unavailable</h3>
+        <p>The doctor profile could not be loaded. Please contact support.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

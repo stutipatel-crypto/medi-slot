@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="50" fill="#e8f0fb"/>
+  <circle cx="50" cy="38" r="18" fill="#1a6fc4" opacity="0.6"/>
+  <ellipse cx="50" cy="80" rx="28" ry="20" fill="#1a6fc4" opacity="0.4"/>
+  <text x="50" y="44" text-anchor="middle" fill="#fff" font-size="22" font-family="sans-serif" font-weight="bold">Dr</text>
+</svg>

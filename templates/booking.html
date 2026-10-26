@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Book Appointment{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>📅 Book a Demo Appointment</h1>
+  <p>Select a date and available time slot below.</p>
+</div>
+
+<div class="section">
+  <div class="container" style="max-width:680px;">
+
+    {% if booking_mode == 'demo' %}
+      <div class="alert alert-demo" role="alert">
+        <strong>DEMO MODE:</strong> This booking workflow is a demonstration only.
+        It is <em>not</em> connected to the clinic. Your booking will be stored locally
+        but the clinic will <em>not</em> be notified. Do not treat this as a confirmed
+        clinic appointment.
+      </div>
+    {% endif %}
+
+    {% if conflicting_appt %}
+      <div class="alert alert-warning" role="alert" style="border-left:4px solid #dc2626;background:var(--danger-bg);">
+        <div style="font-size:1.05rem;font-weight:700;color:var(--danger);margin-bottom:0.5rem;">
+          You already have an appointment on this date
+        </div>
+        <p style="margin:0 0 0.75rem;color:var(--text);">
+          You have an active appointment on
+          <strong>{{ conflicting_appt.appointment_date }}</strong>
+          at <strong>{{ conflicting_appt.appointment_time }}</strong>.
+          Only <strong>one appointment per day</strong> is allowed.
+          Please cancel the existing appointment first if you want to book a new one.
+        </p>
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+          <form method="post"
+                action="{{ url_for('cancel_appointment', appointment_id=conflicting_appt.appointment_id) }}"
+                onsubmit="return confirm('Cancel your appointment on {{ conflicting_appt.appointment_date }} at {{ conflicting_appt.appointment_time }}?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <button type="submit" class="btn btn-danger">Cancel Existing Appointment</button>
+          </form>
+          <a href="{{ url_for('appointment_details', appointment_id=conflicting_appt.appointment_id) }}"
+             class="btn btn-outline">View Existing Appointment</a>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if show_queue_warning %}
+      <div class="alert alert-warning" role="alert">
+        <strong>High queue (DEMO DATA):</strong> There are approximately
+        {{ demo_patients_ahead }} simulated patients ahead.
+        You can still proceed.
+      </div>
+    {% endif %}
+
+    <!-- Doctor summary -->
+    <div class="card" style="margin-bottom:1.5rem;">
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <img
+          src="{{ doctor.profile_image }}"
+          alt="{{ doctor.doctor_name }}"
+          class="doctor-avatar"
+          onerror="this.src='/static/images/doctor-placeholder.svg'"
+        />
+        <div>
+          <div class="doctor-name">{{ doctor.doctor_name }}</div>
+          <div class="doctor-spec">{{ doctor.specialization }}</div>
+          <div style="font-size:0.85rem;color:var(--text-muted);">{{ doctor.clinic_name }} &bull; {{ doctor.city }}</div>
+          <div style="font-size:0.85rem;margin-top:0.2rem;">
+            Fee: <strong style="color:var(--blue);">₹{{ doctor.consultation_fee }}</strong>
+            <em style="font-size:0.77rem;color:var(--warning);"> (needs confirmation)</em>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Booking form -->
+    <div class="card">
+      <div class="card-header">Select Date &amp; Time</div>
+      <form method="post" action="{{ url_for('book_appointment', doctor_id=doctor.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+        <div class="form-group">
+          <label for="appointment_date">Appointment Date</label>
+          <input
+            type="date"
+            id="appointment_date"
+            name="appointment_date"
+            value="{{ selected_date }}"
+            min="{{ today }}"
+            required
+            aria-required="true"
+          />
+          <small style="color:var(--text-muted);font-size:0.8rem;">
+            Clinic is open Mon–Sat. Sunday is closed. Times are from stored visiting hours (needs confirmation).
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="appointment_time">Available Time Slot</label>
+          <select name="appointment_time" id="appointment_time" required aria-required="true">
+            {% if available_slots %}
+              {% for slot in available_slots %}
+                <option value="{{ slot }}">{{ slot }}</option>
+              {% endfor %}
+            {% else %}
+              <option value="">No slots available for this date</option>
+            {% endif %}
+          </select>
+          <small style="color:var(--text-muted);font-size:0.8rem;">
+            Slots are derived from demo visiting hours. Change the date to see different slots.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="consultation_type">Consultation Type</label>
+          <select name="consultation_type" id="consultation_type">
+            <option value="In-person">In-person</option>
+          </select>
+          <small style="color:var(--text-muted);font-size:0.8rem;">
+            Video consultation availability is not confirmed for this doctor.
+          </small>
+        </div>
+
+        <div style="display:flex;gap:0.75rem;margin-top:0.5rem;flex-wrap:wrap;">
+          <button type="submit" class="btn btn-primary btn-lg"
+                  {% if not available_slots or conflicting_appt %}disabled
+                  title="{% if conflicting_appt %}Cancel your existing appointment for this day first{% else %}No slots available{% endif %}"{% endif %}>
+            Confirm Demo Booking
+          </button>
+          <a href="{{ url_for('doctor_profile', doctor_id=doctor.id) }}" class="btn btn-outline btn-lg">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // Reload slots via AJAX when date changes
+  // (main.js handles this automatically for #appointment_date + #appointment_time)
+</script>
+{% endblock %}

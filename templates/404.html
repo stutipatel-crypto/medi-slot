@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}404 Not Found{% endblock %}
+{% block content %}
+<div class="section" style="text-align:center;min-height:60vh;display:flex;align-items:center;justify-content:center;">
+  <div>
+    <div style="font-size:5rem;">🔍</div>
+    <h1 style="font-size:2.5rem;font-weight:800;color:var(--blue);">404</h1>
+    <h2>Page Not Found</h2>
+    <p style="color:var(--text-muted);max-width:400px;margin:0.75rem auto 1.5rem;">
+      The page you are looking for does not exist.
+      It may have been moved or the address may be incorrect.
+    </p>
+    <a href="{{ url_for('index') }}" class="btn btn-primary">Go to Home</a>
+    <a href="{{ url_for('search_doctors') }}" class="btn btn-outline" style="margin-left:0.75rem;">Search Doctors</a>
+  </div>
+</div>
+{% endblock %}

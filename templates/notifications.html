@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>🔔 Notifications</h1>
+  <p>Your in-app appointment updates.</p>
+</div>
+
+<div class="section">
+  <div class="container" style="max-width:700px;">
+
+    <div class="alert alert-info" role="note">
+      ℹ️ These are in-app notifications only. Medi Slot does not send SMS, email,
+      or WhatsApp messages in its current demo configuration.
+    </div>
+
+    <div class="card">
+      {% if notifications %}
+        {% for n in notifications %}
+          <div class="notif-item">
+            <span class="notif-icon">
+              {% if n.type == 'booking_confirmed' %}✅
+              {% elif n.type == 'booking_cancelled' %}❌
+              {% elif n.type == 'booking_rescheduled' %}🔄
+              {% elif n.type == 'queue_threshold' %}⏱️
+              {% else %}🔔{% endif %}
+            </span>
+            <div style="flex:1;">
+              <div class="notif-msg">{{ n.message }}</div>
+              <div class="notif-time">{{ n.created_at }}</div>
+              {% if n.appointment_id %}
+                <a href="{{ url_for('appointment_details', appointment_id=n.appointment_id) }}"
+                   style="font-size:0.8rem;" class="btn btn-outline btn-sm" style="margin-top:0.4rem;">
+                  View Appointment
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-state-icon">🔔</div>
+          <h3>No notifications</h3>
+          <p>You'll see booking confirmations, cancellations, and queue alerts here.</p>
+          <a href="{{ url_for('book_appointment', doctor_id=1) }}"
+             class="btn btn-primary" style="margin-top:1rem;">
+            Book a Demo Appointment
+          </a>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

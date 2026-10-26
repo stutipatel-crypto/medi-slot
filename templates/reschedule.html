@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Reschedule Appointment{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>🔄 Reschedule Appointment</h1>
+  <p>Appointment ID: <code>{{ appt.appointment_id }}</code></p>
+</div>
+
+<div class="section">
+  <div class="container" style="max-width:600px;">
+
+    <div class="alert alert-demo" role="alert">
+      🎭 <strong>DEMO MODE:</strong> Rescheduling is simulated. The clinic will not be notified.
+    </div>
+
+    <div class="card" style="margin-bottom:1.5rem;">
+      <div class="card-header">Current Appointment</div>
+      <table>
+        <tr><th>Date</th><td>{{ appt.appointment_date }}</td></tr>
+        <tr><th>Time</th><td>{{ appt.appointment_time }}</td></tr>
+        <tr><th>Doctor</th><td>{{ appt.doctor_name }}</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-header">New Date &amp; Time</div>
+      <form method="post"
+            action="{{ url_for('reschedule_appointment', appointment_id=appt.appointment_id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <input type="hidden" id="exclude_appointment_id" value="{{ appt.appointment_id }}" />
+
+        <div class="form-group">
+          <label for="appointment_date">New Date</label>
+          <input
+            type="date"
+            id="appointment_date"
+            name="appointment_date"
+            value="{{ selected_date }}"
+            min="{{ today }}"
+            required
+            aria-required="true"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="appointment_time">New Time Slot</label>
+          <select name="appointment_time" id="appointment_time" required aria-required="true">
+            {% if available_slots %}
+              {% for slot in available_slots %}
+                <option value="{{ slot }}">{{ slot }}</option>
+              {% endfor %}
+            {% else %}
+              <option value="">No slots available</option>
+            {% endif %}
+          </select>
+        </div>
+
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:0.5rem;">
+          <button type="submit" class="btn btn-primary"
+                  {% if not available_slots %}disabled{% endif %}>
+            Confirm Reschedule
+          </button>
+          <a href="{{ url_for('appointment_details', appointment_id=appt.appointment_id) }}"
+             class="btn btn-outline">Cancel</a>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

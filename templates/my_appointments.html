@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}My Appointments{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>📋 My Appointments</h1>
+  <p>View and manage all your demo appointments.</p>
+</div>
+
+<div class="section">
+  <div class="container">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem;">
+      <div>
+        <span class="badge badge-blue">Upcoming: {{ upcoming | length }}</span>
+        <span class="badge badge-green" style="margin-left:6px;">Completed: {{ completed | length }}</span>
+        <span class="badge badge-red" style="margin-left:6px;">Cancelled: {{ cancelled | length }}</span>
+      </div>
+      <a href="{{ url_for('book_appointment', doctor_id=1) }}" class="btn btn-primary btn-sm">
+        + New Demo Booking
+      </a>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="upcoming" role="tab" aria-selected="true">
+        Upcoming ({{ upcoming | length }})
+      </button>
+      <button class="tab-btn" data-tab="completed" role="tab" aria-selected="false">
+        Completed ({{ completed | length }})
+      </button>
+      <button class="tab-btn" data-tab="cancelled" role="tab" aria-selected="false">
+        Cancelled ({{ cancelled | length }})
+      </button>
+    </div>
+
+    <!-- Upcoming -->
+    <div class="tab-content active" id="tab-upcoming" role="tabpanel">
+      {% if upcoming %}
+        {% for appt in upcoming %}
+          {% include '_appt_card.html' with context %}
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-state-icon">📅</div>
+          <h3>No upcoming appointments</h3>
+          <p><a href="{{ url_for('book_appointment', doctor_id=1) }}">Book a demo appointment</a> to get started.</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Completed -->
+    <div class="tab-content" id="tab-completed" role="tabpanel">
+      {% if completed %}
+        {% for appt in completed %}
+          {% include '_appt_card.html' with context %}
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-state-icon">✅</div>
+          <h3>No completed appointments yet</h3>
+          <p>Past appointments will appear here.</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Cancelled -->
+    <div class="tab-content" id="tab-cancelled" role="tabpanel">
+      {% if cancelled %}
+        {% for appt in cancelled %}
+          {% include '_appt_card.html' with context %}
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-state-icon">🚫</div>
+          <h3>No cancelled appointments</h3>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+[
+  {
+    "id": 1,
+    "name": "stuti",
+    "email": "stuti.patel@avantika.edu.in",
+    "password_hash": "scrypt:32768:8:1$kTH9LODWY4fxFAm5$05757b3768b4a7f25df497ffe76d6c3af9139993f014be8e30cdf5d0396d645c831136b4243985f2c9d584b7f9ce9f1be2514a0f6a1fc350023329fc686c6df8",
+    "created_at": "2026-10-22T21:30:13"
+  }
+]

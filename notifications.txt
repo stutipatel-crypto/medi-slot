@@ -1,0 +1,74 @@
+[
+  {
+    "notification_id": "NTF-C3865E13",
+    "user_id": 1,
+    "type": "booking_confirmed",
+    "message": "Your demo appointment (ID: MS-C1D9B346) has been booked for 2026-10-23 at 09:15. This is a DEMO booking — not a confirmed clinic appointment.",
+    "appointment_id": "MS-C1D9B346",
+    "is_read": true,
+    "created_at": "2026-10-22T21:30:27"
+  },
+  {
+    "notification_id": "NTF-07992F25",
+    "user_id": 1,
+    "type": "booking_confirmed",
+    "message": "Your demo appointment (ID: MS-C327D1A0) has been booked for 2026-10-23 at 13:15. This is a DEMO booking — not a confirmed clinic appointment.",
+    "appointment_id": "MS-C327D1A0",
+    "is_read": true,
+    "created_at": "2026-10-22T21:31:08"
+  },
+  {
+    "notification_id": "NTF-4EE343C0",
+    "user_id": 1,
+    "type": "booking_confirmed",
+    "message": "Your demo appointment (ID: MS-53700D2E) has been booked for 2026-10-24 at 09:00. This is a DEMO booking — not a confirmed clinic appointment.",
+    "appointment_id": "MS-53700D2E",
+    "is_read": true,
+    "created_at": "2026-10-23T10:44:13"
+  },
+  {
+    "notification_id": "NTF-C82B0DF6",
+    "user_id": 1,
+    "type": "booking_confirmed",
+    "message": "Your demo appointment (ID: MS-B814D1EF) has been booked for 2026-10-24 at 09:30. This is a DEMO booking — not a confirmed clinic appointment.",
+    "appointment_id": "MS-B814D1EF",
+    "is_read": true,
+    "created_at": "2026-10-23T10:44:54"
+  },
+  {
+    "notification_id": "NTF-D2F9DDE4",
+    "user_id": 1,
+    "type": "queue_threshold",
+    "message": "Queue update for appointment MS-B814D1EF: 1 patients are ahead of you (DEMO DATA).",
+    "appointment_id": "MS-B814D1EF",
+    "is_read": true,
+    "created_at": "2026-10-23T10:45:07"
+  },
+  {
+    "notification_id": "NTF-AE8C17ED",
+    "user_id": 1,
+    "type": "booking_confirmed",
+    "message": "Your demo appointment (ID: MS-3C371F1D) has been booked for 2026-10-24 at 10:00. This is a DEMO booking — not a confirmed clinic appointment.",
+    "appointment_id": "MS-3C371F1D",
+    "is_read": true,
+    "created_at": "2026-10-23T10:51:43"
+  },
+  {
+    "notification_id": "NTF-83A55C91",
+    "user_id": 1,
+    "type": "booking_cancelled",
+    "message": "Your appointment (ID: MS-53700D2E) has been cancelled.",
+    "appointment_id": "MS-53700D2E",
+    "is_read": true,
+    "created_at": "2026-10-23T10:58:00"
+  },
+  {
+    "notification_id": "NTF-69871CAA",
+    "user_id": 1,
+    "type": "booking_cancelled",
+    "message": "Your appointment (ID: MS-3C371F1D) has been cancelled.",
+    "appointment_id": "MS-3C371F1D",
+    "is_read": true,
+    "created_at": "2026-10-23T10:58:07"
+  }
+]
